@@ -1,21 +1,20 @@
-
-import processing.serial.*; // imports a lib that allows us to talkj to Arduino via Serial
+import processing.serial.*; // imports a lib that allows us to talk to Arduino via Serial
 
 PImage colorWheel; // Variable to store our Background image
 Serial myPort; // Object to handle Serial communication
 PFont schrift; // Variable to store our Font
+String colorString;
 
 void setup() { // executed once on startup, prepares everything for runtime
   size(400, 400); // size of the window
-  schrift=loadFont("Garamond-Italic-48.vlw"); // loadig a front
-  textFont(schrift, 48); // saysing tht we actually want to use that font 
+  schrift=loadFont("Garamond-Italic-48.vlw"); // loading a front
+  textFont(schrift, 48); // saying that we actually want to use that font 
   colorWheel=loadImage("colorwheel.png"); // loading our background image
-  //colorWheel=loadImage("IttenHipsterSht.png");
+  //colorWheel=loadImage("no.png");
   
-  println(Serial.list()); // listing all attached serail devices
-  myPort = new Serial(this, Serial.list()[7], 115200); // start communicating with Arduino
+  println(Serial.list()); // listing all attached serial devices
+  myPort = new Serial(this, Serial.list()[0], 115200); // start communicating with Arduino
 }
-
 
 void draw() {
   // get the color of the mouse position's pixel:
@@ -25,17 +24,18 @@ void draw() {
   // get the component values:
   int r = int(red(targetColor)); // extracting the colors red channel
   int g = int(green(targetColor)); // extracting the colors green channel
-  int b = int(blue(targetColor)); // extracting the colors blue channel
-
-  int s = int(map(mouseX,0,width,0,180)); // driving the servo where mouse to the left means a low rotation and to the right means 180° turned
+  int b = int(blue(targetColor)); // extracting the colors blue channel  
 
   // make a comma-separated string:
-  String colorString = r + "," + g + "," + b + "," + s + "\n"; // assembling a nice string ready to be send to Arduino
+  colorString = r + "," + g + "," + b + "\n"; // assembling a nice string ready to be send to Arduino
 
-  // send it out the serial port:
-  myPort.write(colorString );
-  
+ 
   fill(255);  // switching tp a white fill for text
-  text(s,50,height-50);  // ashwing waht arduino actually thinks :)
+  text(colorString,50,height-50);  // showing what arduino actually thinks :)
+}
+
+void mouseMoved(){  
+  // send it out the serial port:
+  myPort.write(colorString);
 }
 
