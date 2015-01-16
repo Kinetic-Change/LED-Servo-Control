@@ -4,16 +4,16 @@ PImage colorWheel; // Variable to store our Background image
 String colorString;
 Serial myPort; // Object to handle Serial communication
 PFont schrift; // Variable to store our Font
-String back=" "; // Variable to store backtalk from Arduino
+String back= " "; // Variable to store backtalk from Arduino
 
 void setup() { // executed once on startup, prepares everything for runtime
   size(400, 400); // size of the window
   schrift=loadFont("Garamond-Italic-32.vlw"); // loading a font
-  textFont(schrift, 32); // saying tht we actually want to use that font 
+  textFont(schrift, 32); // saying that we actually want to use that font 
   colorWheel=loadImage("colorwheel.png"); // loading our background image  
   
   println(Serial.list()); // listing all attached serail devices
-  myPort = new Serial(this, Serial.list()[0], 115200); // start communicating with Arduino
+  myPort = new Serial(this, Serial.list()[0], 11500); // start communicating with Arduino
 }
 
 void draw() {
@@ -41,6 +41,7 @@ void mouseMoved(){
 
 void serialEvent(Serial p) {  
   String message = myPort.readStringUntil(13); // get message till line mbreak (ASCII > 13)
+  int message = myPort.readByte(2)
   println("received message from serial : " + message);
 
   if(message != null){
